@@ -1,8 +1,13 @@
 <html>
     <head>
-        <script src="index.js"></script>
+        <script src="index.js" defer="true"></script>
+        <link rel="stylesheet" href="index.css">
     </head>
     <body>
+        <label for="myfile">Select a file:</label>
+        <input type="file" id="flagFile" name="flag", accept="image/*", capture="user">
 
+        <canvas id="canvas1" width="128" height="128"></canvas>
+        <canvas id="canvas2" width="128" height="128"></canvas>
     </body>
 </html>
