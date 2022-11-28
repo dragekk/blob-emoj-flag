@@ -4,6 +4,8 @@ const canvas2 = document.getElementById('canvas2');
 const context1 = canvas1.getContext('2d');
 const context2 = canvas2.getContext('2d');
 
+const image_size = 128;
+
 const rootContext = document.body.getAttribute("data-root");
 const blobcat = new Image(); blobcat.onload = function() {blobcat.crossOrigin = "Anonymous";}; blobcat.src = "blobcat.png";
 const blobfox = new Image(); blobfox.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox.src = "blobfox.png";
@@ -44,36 +46,41 @@ function lerpColor(a, b, t) {
 }
 
 function drawEmoji(background, overlay, flag, ctx) {
-    const pixelImageData = ctx.createImageData(1, 1);
+    const pixelImageData = ctx.createImageData(128, 128);
 
-    ctx.clearRect(0, 0, 128, 128);
+    ctx.clearRect(0, 0, image_size, image_size);
 
-    const backgroundCanvas = imageToCanvas(background);
-    const overlayCanvas = imageToCanvas(overlay);
-    const flagCanvas = imageToCanvas(flag);
-
+    console.log("creating image data");
+    const backgroundImageData = imageToCanvas(background).getImageData(0, 0, background.width, background.height).data;
+    const overlayImageData = imageToCanvas(overlay).getImageData(0, 0, overlay.width, overlay.height).data;
+    const flagImageData = imageToCanvas(flag).getImageData(0, 0, flag.width, flag.height);
+    console.log("generating image");
+    
     const flagSize = Math.min(flag.width, flag.height);
 
-    for (let x = 0; x < 127; x++) {
-        for (let y = 0; y < 127; y++) {
-            let backgroundPixel = backgroundCanvas.getImageData(x, y, 1, 1).data;
-            let overlayPixel = overlayCanvas.getImageData(x, y, 1, 1).data;
-            let dx = (flag.width - flagSize) + overlayPixel[0] / 255 * flagSize;
-            let dy = overlayPixel[1] / 255 * flagSize;
-            let flagPixel = flagCanvas.getImageData(dx, dy, 1, 1).data; flagPixel[3] = 255;
+    for (let x = 0; x <= image_size-1; x++) {
+        for (let y = 0; y <= image_size-1; y++) {
+        	const i = (x + y * image_size) * 4;
+            let backgroundPixel = backgroundImageData.slice(i, i + 4);
+            let overlayPixel = overlayImageData.slice(i, i + 4);
+            let dx = Math.floor((flag.width - flagSize) + overlayPixel[0] / 255 * flagSize);
+            let dy = Math.floor(overlayPixel[1] / 255 * flagSize);
+            const iFlag = (dx + dy * flagImageData.width) * 4;
+            let flagPixel = flagImageData.data.slice(iFlag, iFlag + 4); flagPixel[3] = 255;
             let pixel = lerpColor(backgroundPixel, flagPixel, overlayPixel[3]/255);
             if (backgroundPixel < 250) {
                 pixel = flagPixel;
                 pixel[3] = overlayPixel[3];
             }
-            pixelImageData.data[0] = pixel[0];
-            pixelImageData.data[1] = pixel[1];
-            pixelImageData.data[2] = pixel[2];
-            pixelImageData.data[3] = pixel[3];
-
-            ctx.putImageData(pixelImageData, x, y);
+            pixelImageData.data[i] = pixel[0];
+            pixelImageData.data[i+1] = pixel[1];
+            pixelImageData.data[i+2] = pixel[2];
+            pixelImageData.data[i+3] = pixel[3];
         }
     }
+    
+    ctx.putImageData(pixelImageData, 0, 0);
+    console.log("done");
 }
 
 function imageToCanvas(image) {
@@ -81,7 +88,7 @@ function imageToCanvas(image) {
     canvas.width = image.width;
     canvas.height = image.height;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', {willReadFrequently: true});
 
     ctx.drawImage(image, 0, 0);
 
