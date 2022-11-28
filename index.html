@@ -1,26 +1,43 @@
+<!DOCTYPE html>
 <html>
     <head>
+        <meta name="color-scheme" content="light dark">
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
         <title>blob cat, fox emoji thing</title>
         <link rel="stylesheet" href="index.css">
-        <script src="index.js?2" defer="true"></script>
+        <script src="index.js?3" defer="true"></script>
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
     </head>
     <body>
         <h1>blobcat / blobfox emoji generator</h1>
         <p>simple website that generates blobcat or blobfox emoji with blanket that have any texture you want</p>
 
         <input type="file" id="flagFile" name="flag" accept="image/*">
-        
-        <div class="images">
-            <canvas id="canvas1" width="128" height="128"></canvas>
-            <canvas id="canvas2" width="128" height="128"></canvas>
-            <canvas id="canvas3" width="128" height="128"></canvas>
-        </div>
-
-        <button type="button" onclick="saveCanvas('blobcat', canvas1);" class="button">download blobcat emoji</button>
-        <button type="button" onclick="saveCanvas('blobfox', canvas2);" class="button">download blobfox emoji</button>
-        <button type="button" onclick="saveCanvas('blobfox2', canvas3);" class="button">download blobfox2 emoji</button>
-
+        <label for="flagFile" class="button upload-button">Choose File</label>
         <p></p>
-        <a href="https://github.com/dragekk/blob-emoji-flag">Website source code</a>
+        
+        
+        <div class="responsive"> <div class="image">
+            <canvas id="canvas1" width="128" height="128" class="image_canvas"></canvas>
+            <button type="button" onclick="saveCanvas('blobcat', canvas1);" class="button download-button">download</button>
+        </div> </div>
+
+        <div class="responsive"> <div class="image">
+            <canvas id="canvas2" width="128" height="128" class="image_canvas"></canvas>
+            <button type="button" onclick="saveCanvas('blobfox', canvas2);" class="button download-button">download</button>
+        </div> </div>
+
+        <div class="responsive"> <div class="image">
+            <canvas id="canvas3" width="128" height="128" class="image_canvas"></canvas>
+            <button type="button" onclick="saveCanvas('blobfox2', canvas3);" class="button download-button">download</button>
+        </div> </div>
+
+        <div class="responsive"> <div class="image">
+            <canvas id="canvas4" width="128" height="128" class="image_canvas"></canvas>
+            <button type="button" onclick="saveCanvas('blobfoxsign', canvas4);" class="button download-button">download</button>
+        </div> </div>
+
+        <div class="clearfix"></div>
+        <a href="https://github.com/dragekk/blob-emoji-flag" class="link button">Website source code</a>
     </body>
 </html>

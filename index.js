@@ -17,6 +17,11 @@ const context3 = canvas3.getContext('2d');
 const blobfox2 = new Image(); blobfox2.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox2.src = "blobfox2.png";
 const blobfox2overlay = new Image(); blobfox2overlay.onload = function() {blobfox2overlay.crossOrigin = "Anonymous";}; blobfox2overlay.src = "blobfox2overlay.png";
 
+const canvas4 = document.getElementById('canvas4');
+const context4 = canvas4.getContext('2d');
+const blobfoxsign = new Image(); blobfoxsign.onload = function() {blobfoxsign.crossOrigin = "Anonymous";}; blobfoxsign.src = "blobfoxsign.png";
+const blobfoxsignoverlay = new Image(); blobfoxsignoverlay.onload = function() {blobfoxsignoverlay.crossOrigin = "Anonymous";}; blobfoxsignoverlay.src = "blobfoxsignoverlay.png";
+
 
 function flagSelected() {
     const file = flagFile.files[0];
@@ -34,9 +39,10 @@ function flagSelected() {
         img.src = URL.createObjectURL(file);
 
         img.addEventListener('load', () => {
-            drawEmoji(blobcat, blobcatoverlay, img, context1)
-            drawEmoji(blobfox, blobfoxoverlay, img, context2)
-            drawEmoji(blobfox2, blobfox2overlay, img, context3)
+            drawEmoji(blobcat, blobcatoverlay, img, context1, false)
+            drawEmoji(blobfox, blobfoxoverlay, img, context2, false)
+            drawEmoji(blobfox2, blobfox2overlay, img, context3, false)
+            drawEmoji(blobfoxsign, blobfoxsignoverlay, img, context4, true)
         }, false);
     }
 }
@@ -52,16 +58,14 @@ function lerpColor(a, b, t) {
     ];
 }
 
-function drawEmoji(background, overlay, flag, ctx) {
+function drawEmoji(background, overlay, flag, ctx, scale_flag) {
     const pixelImageData = ctx.createImageData(128, 128);
 
     ctx.clearRect(0, 0, image_size, image_size);
 
-    console.log("creating image data");
     const backgroundImageData = imageToCanvas(background).getImageData(0, 0, background.width, background.height).data;
     const overlayImageData = imageToCanvas(overlay).getImageData(0, 0, overlay.width, overlay.height).data;
     const flagImageData = imageToCanvas(flag).getImageData(0, 0, flag.width, flag.height);
-    console.log("generating image");
     
     const flagSize = Math.min(flag.width, flag.height);
 
@@ -72,6 +76,10 @@ function drawEmoji(background, overlay, flag, ctx) {
             let overlayPixel = overlayImageData.slice(i, i + 4);
             let dx = Math.floor((flag.width - flagSize) + overlayPixel[0] / 255 * flagSize);
             let dy = Math.floor(overlayPixel[1] / 255 * flagSize);
+            if (scale_flag) {
+                dx = Math.floor(overlayPixel[0] / 255 * flag.width);
+                dy = Math.floor(overlayPixel[1] / 255 * flag.height);
+            }
             const iFlag = (dx + dy * flagImageData.width) * 4;
             let flagPixel = flagImageData.data.slice(iFlag, iFlag + 4); flagPixel[3] = 255;
             let pixel = lerpColor(backgroundPixel, flagPixel, overlayPixel[3]/255);
@@ -87,7 +95,6 @@ function drawEmoji(background, overlay, flag, ctx) {
     }
     
     ctx.putImageData(pixelImageData, 0, 0);
-    console.log("done");
 }
 
 function imageToCanvas(image) {
