@@ -1,16 +1,22 @@
 const flagFile = document.getElementById("flagFile")
-const canvas1 = document.getElementById('canvas1');
-const canvas2 = document.getElementById('canvas2');
-const context1 = canvas1.getContext('2d');
-const context2 = canvas2.getContext('2d');
 
 const image_size = 128;
 
-const rootContext = document.body.getAttribute("data-root");
+const canvas1 = document.getElementById('canvas1');
+const context1 = canvas1.getContext('2d');
 const blobcat = new Image(); blobcat.onload = function() {blobcat.crossOrigin = "Anonymous";}; blobcat.src = "blobcat.png";
-const blobfox = new Image(); blobfox.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox.src = "blobfox.png";
 const blobcatoverlay = new Image(); blobcatoverlay.onload = function() {blobcatoverlay.crossOrigin = "Anonymous";}; blobcatoverlay.src = "blobcatoverlay.png";
+
+const canvas2 = document.getElementById('canvas2');
+const context2 = canvas2.getContext('2d');
+const blobfox = new Image(); blobfox.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox.src = "blobfox.png";
 const blobfoxoverlay = new Image(); blobfoxoverlay.onload = function() {blobfoxoverlay.crossOrigin = "Anonymous";}; blobfoxoverlay.src = "blobfoxoverlay.png";
+
+const canvas3 = document.getElementById('canvas3');
+const context3 = canvas3.getContext('2d');
+const blobfox2 = new Image(); blobfox2.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox2.src = "blobfox2.png";
+const blobfox2overlay = new Image(); blobfox2overlay.onload = function() {blobfox2overlay.crossOrigin = "Anonymous";}; blobfox2overlay.src = "blobfox2overlay.png";
+
 
 function flagSelected() {
     const file = flagFile.files[0];
@@ -30,6 +36,7 @@ function flagSelected() {
         img.addEventListener('load', () => {
             drawEmoji(blobcat, blobcatoverlay, img, context1)
             drawEmoji(blobfox, blobfoxoverlay, img, context2)
+            drawEmoji(blobfox2, blobfox2overlay, img, context3)
         }, false);
     }
 }
