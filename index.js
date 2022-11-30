@@ -30,7 +30,7 @@ function flagSelected() {
     }
 
     
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(file);
 
     reader.onloadend = function() {
@@ -75,21 +75,23 @@ function drawEmoji(background, overlay, flag, ctx, scale_flag) {
     for (let x = 0; x <= image_size-1; x++) {
         for (let y = 0; y <= image_size-1; y++) {
         	const i = (x + y * image_size) * 4;
-            let backgroundPixel = backgroundImageData.slice(i, i + 4);
-            let overlayPixel = overlayImageData.slice(i, i + 4);
-            let dx = Math.floor((flag.width - flagSize) + overlayPixel[0] / 255 * flagSize);
-            let dy = Math.floor(overlayPixel[1] / 255 * flagSize);
+            const backgroundPixel = backgroundImageData.slice(i, i + 4);
+            const overlayPixel = overlayImageData.slice(i, i + 4);
+
+            let dx;
+            let dy;
             if (scale_flag) {
                 dx = Math.floor(overlayPixel[0] / 255 * flag.width);
                 dy = Math.floor(overlayPixel[1] / 255 * flag.height);
+            } else {
+                dx = Math.floor((flag.width - flagSize) + overlayPixel[0] / 255 * flagSize);
+                dy = Math.floor(overlayPixel[1] / 255 * flagSize);
             }
             const iFlag = (dx + dy * flagImageData.width) * 4;
-            let flagPixel = flagImageData.data.slice(iFlag, iFlag + 4); flagPixel[3] = overlayPixel[3];
-            let pixel = blendColor(backgroundPixel, flagPixel);
-            if (backgroundPixel < 250) {
-                // pixel = flagPixel;
-                // pixel[3] = overlayPixel[3];
-            }
+
+            const flagPixel = flagImageData.data.slice(iFlag, iFlag + 4); flagPixel[3] = overlayPixel[3];
+
+            const pixel = blendColor(backgroundPixel, flagPixel);
             pixelImageData.data[i] = pixel[0];
             pixelImageData.data[i+1] = pixel[1];
             pixelImageData.data[i+2] = pixel[2];
