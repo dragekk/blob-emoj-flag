@@ -4,23 +4,23 @@ const image_size = 128;
 
 const canvas1 = document.getElementById('canvas1');
 const context1 = canvas1.getContext('2d');
-const blobcat = new Image(); blobcat.onload = function() {blobcat.crossOrigin = "Anonymous";}; blobcat.src = "blobcat.png";
-const blobcatoverlay = new Image(); blobcatoverlay.onload = function() {blobcatoverlay.crossOrigin = "Anonymous";}; blobcatoverlay.src = "blobcatoverlay.png";
+const blobcat = new Image(); blobcat.onload = function() {blobcat.crossOrigin = "Anonymous";}; blobcat.src = "emojis/blobcat.png";
+const blobcatoverlay = new Image(); blobcatoverlay.onload = function() {blobcatoverlay.crossOrigin = "Anonymous";}; blobcatoverlay.src = "emojis/blobcatoverlay.png";
 
 const canvas2 = document.getElementById('canvas2');
 const context2 = canvas2.getContext('2d');
-const blobfox = new Image(); blobfox.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox.src = "blobfox.png";
-const blobfoxoverlay = new Image(); blobfoxoverlay.onload = function() {blobfoxoverlay.crossOrigin = "Anonymous";}; blobfoxoverlay.src = "blobfoxoverlay.png";
+const blobfox = new Image(); blobfox.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox.src = "emojis/blobfox.png";
+const blobfoxoverlay = new Image(); blobfoxoverlay.onload = function() {blobfoxoverlay.crossOrigin = "Anonymous";}; blobfoxoverlay.src = "emojis/blobfoxoverlay.png";
 
 const canvas3 = document.getElementById('canvas3');
 const context3 = canvas3.getContext('2d');
-const blobfox2 = new Image(); blobfox2.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox2.src = "blobfox2.png";
-const blobfox2overlay = new Image(); blobfox2overlay.onload = function() {blobfox2overlay.crossOrigin = "Anonymous";}; blobfox2overlay.src = "blobfox2overlay.png";
+const blobfox2 = new Image(); blobfox2.onload = function() {blobfox.crossOrigin = "Anonymous";}; blobfox2.src = "emojis/blobfox2.png";
+const blobfox2overlay = new Image(); blobfox2overlay.onload = function() {blobfox2overlay.crossOrigin = "Anonymous";}; blobfox2overlay.src = "emojis/blobfox2overlay.png";
 
 const canvas4 = document.getElementById('canvas4');
 const context4 = canvas4.getContext('2d');
-const blobfoxsign = new Image(); blobfoxsign.onload = function() {blobfoxsign.crossOrigin = "Anonymous";}; blobfoxsign.src = "blobfoxsign.png";
-const blobfoxsignoverlay = new Image(); blobfoxsignoverlay.onload = function() {blobfoxsignoverlay.crossOrigin = "Anonymous";}; blobfoxsignoverlay.src = "blobfoxsignoverlay.png";
+const blobfoxsign = new Image(); blobfoxsign.onload = function() {blobfoxsign.crossOrigin = "Anonymous";}; blobfoxsign.src = "emojis/blobfoxsign.png";
+const blobfoxsignoverlay = new Image(); blobfoxsignoverlay.onload = function() {blobfoxsignoverlay.crossOrigin = "Anonymous";}; blobfoxsignoverlay.src = "emojis/blobfoxsignoverlay.png";
 
 
 function flagSelected() {
@@ -49,12 +49,15 @@ function flagSelected() {
 
 flagFile.addEventListener("change", flagSelected, false);
 
-function lerpColor(a, b, t) {
+function blendColor(color1, color2) {
+    const r1 = color2[0] / 255, g1 = color2[1] / 255, b1 = color2[2] / 255, a1 = color2[3] / 255;
+    const r2 = color1[0] / 255, g2 = color1[1] / 255, b2 = color1[2] / 255, a2 = color1[3] / 255;
+    const alpha = a1 + a2 * (1 - a1);
     return [
-        a[0] + (b[0] - a[0]) * t,
-        a[1] + (b[1] - a[1]) * t,
-        a[2] + (b[2] - a[2]) * t,
-        a[3] + (b[3] - a[3]) * t,
+        (r1 * a1 + r2 * a2 * (1 - a1)) / alpha * 255,
+        (g1 * a1 + g2 * a2 * (1 - a1)) / alpha * 255,
+        (b1 * a1 + b2 * a2 * (1 - a1)) / alpha * 255,
+        alpha * 255
     ];
 }
 
@@ -81,11 +84,11 @@ function drawEmoji(background, overlay, flag, ctx, scale_flag) {
                 dy = Math.floor(overlayPixel[1] / 255 * flag.height);
             }
             const iFlag = (dx + dy * flagImageData.width) * 4;
-            let flagPixel = flagImageData.data.slice(iFlag, iFlag + 4); flagPixel[3] = 255;
-            let pixel = lerpColor(backgroundPixel, flagPixel, overlayPixel[3]/255);
+            let flagPixel = flagImageData.data.slice(iFlag, iFlag + 4); flagPixel[3] = overlayPixel[3];
+            let pixel = blendColor(backgroundPixel, flagPixel);
             if (backgroundPixel < 250) {
-                pixel = flagPixel;
-                pixel[3] = overlayPixel[3];
+                // pixel = flagPixel;
+                // pixel[3] = overlayPixel[3];
             }
             pixelImageData.data[i] = pixel[0];
             pixelImageData.data[i+1] = pixel[1];
