@@ -89,7 +89,7 @@ function drawEmoji(background, overlay, flag, ctx, scale_flag) {
             }
             const iFlag = (dx + dy * flagImageData.width) * 4;
 
-            const flagPixel = flagImageData.data.slice(iFlag, iFlag + 4); flagPixel[3] = overlayPixel[3];
+            const flagPixel = flagImageData.data.slice(iFlag, iFlag + 4); flagPixel[3] = (flagPixel[3] / 255) * (overlayPixel[3] / 255) * 255;
 
             const pixel = blendColor(backgroundPixel, flagPixel);
             pixelImageData.data[i] = pixel[0];
